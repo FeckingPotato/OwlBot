@@ -1,2 +1,6 @@
 .env
+data.json
+money.json
+owl.jpg
+package-lock.json
 node_modules
