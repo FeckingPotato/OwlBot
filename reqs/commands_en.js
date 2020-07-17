@@ -43,28 +43,28 @@ async function prb(msg) {
 }
 
 async function egg(msg) {
-	const data = JSON.parse(fs.readFileSync('data.json'))
-				if (msg.mentions.users.first() === undefined) {
+	var egg_count = JSON.parse(fs.readFileSync('./data/egg-count.json'))
+			if (msg.mentions.users.first() === undefined) {
 					msg.channel.send(msg.member.user.username+' ate a raw egg')
-				}
-				var egg_count = data.egg_count
-				if (eval('data.egg_count.a'+msg.mentions.users.first().id) === (NaN||null||undefined)) {
-					eval('data.egg_count.a'+msg.mentions.users.first().id+' = 1')
-				}
-				else {
-					eval('data.egg_count.a'+msg.mentions.users.first().id+'++')
-				}
-				var egger = msg.member.user.username
-				var egged = msg.mentions.users.first().username
-				var eggs = eval('egg_count.a'+msg.mentions.users.first().id)
-				console.log(eggs)
-				if (msg.member.user.id === msg.mentions.users.first().id) {
-					msg.channel.send(egger+' threw an egg at themselves, total amount of eggs thrown at '+egged+': '+eggs)
-				}
-				else {
-					msg.channel.send(egger+' threw an egg at '+egged+', total amount of eggs thrown at '+egged+': '+eggs)
-				}
-				fs.writeFileSync('data.json', JSON.stringify(data), 'utf8')
+			}
+			else {
+					if (eval('egg_count.u'+msg.mentions.users.first().id) === (NaN||null||undefined)) {
+						eval('egg_count.u'+msg.mentions.users.first().id+' = 1')
+					}
+					else {
+						eval('egg_count.u'+msg.mentions.users.first().id+'++')
+					}
+					var egger = msg.member.user.username
+					var egged = msg.mentions.users.first().username
+					var eggs = eval('egg_count.u'+msg.mentions.users.first().id)
+					if (msg.member.user.id === msg.mentions.users.first().id) {
+						msg.channel.send(egger+' threw an agg at themselves, eggs thrown at '+egged+': '+eggs)
+					}
+					else {
+						msg.channel.send(egger+' threw an egg at '+egged+', eggs thrown at '+egged+': '+eggs)
+					}
+					fs.writeFileSync('./data/egg-count.json', JSON.stringify(egg_count), 'utf8')
+			}
 }
 
 async function translate(msg) {

@@ -6,7 +6,8 @@ help - get this list of commands
 owl - get a photo of an owl
 rr - play Russian roulette
 prb <something> - probability of something
-egg <@person> - throw an egg at someone 
+egg <@person> - throw an egg at someone
+daily - get the daily reward
 translate <language pair> <text> - translates some text
 Better command description: !help <command>`)
 			break
@@ -24,6 +25,9 @@ Better command description: !help <command>`)
 			break
 		case 'rr':
 			msg.channel.send('rr - allows you to play Russian roullete, in case of death you become "ded"')
+			break
+		case 'daily':
+			msg.channel.send('daily - you get 100 moneys, the cooldown is 24 hours')
 			break
 		case 'translate':
 			msg.channel.send(`translate - translates text, your message should look like this:

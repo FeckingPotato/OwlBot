@@ -1,6 +1,5 @@
 .env
-data.json
-money.json
+data
+node_modules
 owl.jpg
 package-lock.json
-node_modules

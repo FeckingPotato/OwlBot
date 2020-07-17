@@ -43,29 +43,27 @@ async function prb(msg) {
 }
 
 async function egg(msg) {
-	const data = JSON.parse(fs.readFileSync('data.json'))
+	var egg_count = JSON.parse(fs.readFileSync('./data/egg-count.json'))
 			if (msg.mentions.users.first() === undefined) {
 					msg.channel.send(msg.member.user.username+' съел сырое яйцо')
 			}
 			else {
-					var egg_count = data.egg_count
-					if (eval('data.egg_count.u'+msg.mentions.users.first().id) === (NaN||null||undefined)) {
-						eval('data.egg_count.u'+msg.mentions.users.first().id+' = 1')
+					if (eval('egg_count.u'+msg.mentions.users.first().id) === (NaN||null||undefined)) {
+						eval('egg_count.u'+msg.mentions.users.first().id+' = 1')
 					}
 					else {
-						eval('data.egg_count.u'+msg.mentions.users.first().id+'++')
+						eval('egg_count.u'+msg.mentions.users.first().id+'++')
 					}
 					var egger = msg.member.user.username
 					var egged = msg.mentions.users.first().username
 					var eggs = eval('egg_count.u'+msg.mentions.users.first().id)
-					console.log(eggs)
 					if (msg.member.user.id === msg.mentions.users.first().id) {
 						msg.channel.send(egger+' кинул яйцо в самого себя, всего яиц кинуто в '+egged+': '+eggs)
 					}
 					else {
 						msg.channel.send(egger+' кинул яйцо в '+egged+', всего яиц кинуто в '+egged+': '+eggs)
 					}
-					fs.writeFileSync('data.json', JSON.stringify(data), 'utf8', console.log('written'))
+					fs.writeFileSync('./data/egg-count.json', JSON.stringify(egg_count), 'utf8')
 			}
 }
 
@@ -98,4 +96,3 @@ module.exports.rr = rr
 module.exports.prb = prb
 module.exports.egg = egg
 module.exports.translate = translate
-module.exports.duel = duel
