@@ -7,6 +7,7 @@ owl - get a photo of an owl
 rr - play Russian roulette
 prb <something> - probability of something
 egg <@person> - throw an egg at someone
+money - display the amount of money you have
 daily - get the daily reward
 translate <language pair> <text> - translates some text
 Better command description: !help <command>`)
@@ -29,6 +30,8 @@ Better command description: !help <command>`)
 		case 'daily':
 			msg.channel.send('daily - you get 100 moneys, the cooldown is 24 hours')
 			break
+		case 'money':
+			msg.channel.send('money - shows how many moneys you have')
 		case 'translate':
 			msg.channel.send(`translate - translates text, your message should look like this:
 !translate xx-yy <text>

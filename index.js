@@ -31,6 +31,9 @@ client.on('message', msg => {
 	}
 	if (msg.content.startsWith('!')) {
 		switch (msg.content.split(' ')[0]) {
+			case '!money':
+				cmd_economy.money(msg)
+				break
 			case '!daily':
 				cmd_economy.daily(msg)
 				break
