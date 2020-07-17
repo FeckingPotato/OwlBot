@@ -35,7 +35,7 @@ function daily(msg) {
 		fs.writeFileSync('./data/daily-cooldown.json', JSON.stringify(daily_cooldown), 'UTF-8')
 		if (eval('money.'+rewarded) === undefined) {eval('money.'+rewarded+'=0')}
 		eval('money.'+rewarded+'=money.'+rewarded+'+100')
-		fs.writeFileSync('money.json', JSON.stringify(money), 'UTF-8')
+		fs.writeFileSync('./data/money.json', JSON.stringify(money), 'UTF-8')
 		msg.channel.send('Награда получена (100 денег), следующая награда будет доступна через 24 часа')
 	}
 	else {
