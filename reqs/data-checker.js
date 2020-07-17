@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-try {fs.readFileSync('./data/egg-ount.json')}
+try {fs.readFileSync('./data/egg-сount.json')}
 catch {fs.writeFileSync('./data/egg-count.json', '{}')}
 
 try {fs.readFileSync('./data/money.json')}
