@@ -1,13 +1,11 @@
 const fs = require('fs')
 
-try {fs.readFileSync('./data/egg-сount.json')}
-catch {fs.writeFileSync('./data/egg-count.json', '{}')}
+if (!fs.existsSync('./data')) {fs.mkdirSync('data')}
 
-try {fs.readFileSync('./data/money.json')}
-catch {fs.writeFileSync('./data/money.json', '{}')}
+if (!fs.existsSync('./data/egg-сount.json')) {fs.writeFileSync('./data/egg-count.json', '{}')}
 
-try {fs.readFileSync('./data/language.json')}
-catch {fs.writeFileSync('./data/language.json', '{}')}
+if (!fs.existsSync('./data/money.json')) {fs.writeFileSync('./data/money.json', '{}')}
 
-try {fs.readFileSync('./data/daily-cooldown.json')}
-catch {fs.writeFileSync('./data/daily-cooldown.json', '{}')}
+if (!fs.existsSync('./data/language.json')) {fs.writeFileSync('./data/language.json', '{}')}
+
+if (!fs.existsSync('./data/daily-cooldown.json')) {fs.writeFileSync('./data/daily-cooldown.json', '{}')}
