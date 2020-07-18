@@ -1,5 +1,6 @@
 require('./reqs/data-checker.js')
 require("dotenv").config()
+require('./dummy-server.js')
 const token = process.env.TOKEN
 
 const {Discord, Client, MessageAttachment, Guild} = require('discord.js')
