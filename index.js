@@ -7,61 +7,52 @@ const client = new Client()
 const guild = new Guild(client)
 const fs = require('fs')
 
-const cmd_ru = require('./reqs/commands_ru.js')
-const cmd_economy_ru = require('./reqs/commands-economy_ru.js')
-const cmd_economy_en = require('./reqs/commands-economy_en.js')
-const help_ru = require('./reqs/help_ru.js').help
-const cmd_en = require('./reqs/commands_en.js')
-const help_en = require('./reqs/help_en.js').help
+const fun_cmd = require('./reqs/fun_commands.js')
+const ecn_cmd = require('./reqs/economy_commands.js')
+const help = require('./reqs/help.js').help
 
 var lang = JSON.parse(fs.readFileSync('./data/language.json'))
+var cmd_lang = 'en'
 var cooldown_owl = 0
 
 client.login(token)
 client.on('message', msg => {
 	if (eval("lang.g"+msg.guild.id) == 'ru') {
-		cmd = cmd_ru
-		cmd_economy = cmd_economy_ru
-		help = help_ru
+		cmd_lang = 'ru'
 	}
 	else {
-		cmd = cmd_en
-		cmd_economy = cmd_economy_en
-		help = help_en
+		cmd_lang = 'en'
 	}
-	if (msg.content.startsWith('!')) {
+	if ((msg.content.startsWith('!')) || (msg.content.startsWith('*'))) {
 		switch (msg.content.split(' ')[0]) {
 			case '!money':
-				cmd_economy.money(msg)
+				ecn_cmd.money(msg, cmd_lang)
 				break
 			case '!daily':
-				cmd_economy.daily(msg)
+				ecn_cmd.daily(msg, cmd_lang)
 				break
 			case '!owl':
 				if (cooldown_owl === 0) {
-					cmd.owl(msg)
+					fun_cmd.owl(msg)
 					cooldown_owl = 1
 					setTimeout(() => cooldown_owl = 0, 2000)
 				}
 				break
 			case '!rr':
-				cmd.rr(msg)
+				fun_cmd.rr(msg, cmd_lang)
 				break
 			case '!prb':
-				cmd.prb(msg)
+				fun_cmd.prb(msg, cmd_lang)
 				break
 			case '!egg':
-				cmd.egg(msg)
-				break
-			case '!translate':
-				cmd.translate(msg)
+				fun_cmd.egg(msg, cmd_lang)
 				break
 			case '!help':
-				help(msg)
+				help(msg, cmd_lang)
 				break
-			case '!lang':
+			case '*lang':
 				if (msg.member.hasPermission("ADMINISTRATOR")) {
-					if (msg.content === '!lang') {
+					if (msg.content === '*lang') {
 						if (eval("JSON.parse(fs.readFileSync('./data/language.json')).g"+msg.guild.id) !== undefined) {
 							msg.channel.send(eval("JSON.parse(fs.readFileSync('./data/language.json')).g"+msg.guild.id))
 						}
@@ -74,7 +65,7 @@ client.on('message', msg => {
 					else {
 						switch (msg.content.split(' ')[1]) {
 							default:
-								msg.channel.send('Only "en" and "ru" can be used with !lang')
+								msg.channel.send('Only "en" and "ru" can be used with *lang')
 								break
 							case 'en':
 								eval("lang.g"+msg.guild.id+" = 'en'")
