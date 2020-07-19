@@ -1,18 +1,20 @@
 const {MessageAttachment} = require('discord.js')
-const http = require('./http-functions.js')
 const fs = require('fs')
+const http = require('./http-functions.js')
+const database = require('./database.js')
 const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
 async function owl(msg) {
-	http.owl()
+	await http.owl()
 	const attachment = new MessageAttachment('./owl.jpg')
 	msg.channel.send(attachment);
 }
 
-async function rr(msg, lang) {
-	let ded_role = msg.guild.roles.cache.find(role => role.name === 'ded')
-	let ded_role_member = msg.member.roles.cache.find(role => role.name === 'ded')
+async function rr(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	var ded_role = msg.guild.roles.cache.find(role => role.name === 'ded')
+	var ded_role_member = msg.member.roles.cache.find(role => role.name === 'ded')
 	if (ded_role === undefined) {
 		msg.channel.send(eval(`${lang}.rr_undefined`))
 	}
@@ -33,7 +35,8 @@ async function rr(msg, lang) {
 	}
 }
 
-async function prb(msg, lang) {
+async function prb(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
 	if (msg.content === '!prb') {
 		msg.reply(eval(`${lang}.prb_nothing`))
 	}
@@ -42,29 +45,28 @@ async function prb(msg, lang) {
 	}
 }
 
-async function egg(msg, lang) {
-	var egg_count = JSON.parse(fs.readFileSync('./data/egg-count.json'))
-			if (msg.mentions.users.first() === undefined) {
-					msg.channel.send(msg.member.user.username+eval(`${lang}.egg_undefined`))
-			}
-			else {
-					if (eval('egg_count.u'+msg.mentions.users.first().id) === (NaN||null||undefined)) {
-						eval('egg_count.u'+msg.mentions.users.first().id+' = 1')
-					}
-					else {
-						eval('egg_count.u'+msg.mentions.users.first().id+'++')
-					}
-					var egger = msg.member.user.username
-					var egged = msg.mentions.users.first().username
-					var eggs = eval('egg_count.u'+msg.mentions.users.first().id)
-					if (msg.member.user.id === msg.mentions.users.first().id) {
-						msg.channel.send(egger+eval(`${lang}.egg_self`)+egged+': '+eggs)
-					}
-					else {
-						msg.channel.send(egger+eval(`${lang}.egg_someone1`)+egged+eval(`${lang}.egg_someone2`)+egged+': '+eggs)
-					}
-					fs.writeFileSync('./data/egg-count.json', JSON.stringify(egg_count), 'utf8')
-			}
+async function egg(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	var egger = msg.member.user
+	var egged = msg.mentions.users.first()
+	if (egged === undefined) {
+		msg.channel.send(msg.member.user.username+eval(`${lang}.egg_undefined`))
+	}
+	else {
+		egg_count = await database.getValue(mongo_client, egged.id, 'egg_count')
+		if (egg_count === (NaN||null||undefined)) {
+			database.setValue(mongo_client, egged.id, 'egg-count', 1)
+		}
+		else {
+			database.incValue(mongo_client, egged.id, 'egg-count', 1)
+		}
+		if (egger.id === egged.id) {
+			msg.channel.send(egger.username+eval(`${lang}.egg_self`)+egged.username+': '+egg_count)
+		}
+		else {
+			msg.channel.send(egger.username+eval(`${lang}.egg_someone1`)+egged+eval(`${lang}.egg_someone2`)+egged.username+': '+egg_count)
+		}
+	}
 }
 
 /*async function translate(msg) {

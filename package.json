@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "deasync": "^0.1.20",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "download-file": "^0.1.5",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "wildcard": "^2.0.0",
-    "xmlhttp": "0.0.0",
+    "mongodb": "^3.5.9",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {},

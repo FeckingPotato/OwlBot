@@ -1,8 +1,10 @@
 const fs = require('fs')
+const database = require('./database.js')
 const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
-async function help(msg, lang) {
+async function help(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
 	switch(msg.content.split(' ')[1]) {
 		default:
 			msg.channel.send(eval(`${lang}.help_main`))

@@ -1,36 +1,30 @@
-require('./reqs/data-checker.js')
 require("dotenv").config()
-require('./dummy-server.js')
 const token = process.env.TOKEN
 
-const {Discord, Client, MessageAttachment, Guild} = require('discord.js')
-const client = new Client()
-const guild = new Guild(client)
-const fs = require('fs')
+const {Discord, Client, MessageAttachment} = require('discord.js')
+const discord_client = new Client()
+const {MongoClient} = require('mongodb')
+const mongo_client = new MongoClient(process.env.URI, {useUnifiedTopology: true})
 
 const fun_cmd = require('./reqs/fun_commands.js')
 const ecn_cmd = require('./reqs/economy_commands.js')
 const help = require('./reqs/help.js').help
+const database = require('./reqs/database.js')
 
-var lang = JSON.parse(fs.readFileSync('./data/language.json'))
-var cmd_lang = 'en'
 var cooldown_owl = 0
+var language
 
-client.login(token)
-client.on('message', msg => {
-	if (eval("lang.g"+msg.guild.id) == 'ru') {
-		cmd_lang = 'ru'
-	}
-	else {
-		cmd_lang = 'en'
-	}
+mongo_client.connect(() => {
+discord_client.login(token)
+console.log('working')
+discord_client.on('message', msg => {
 	if ((msg.content.startsWith('!')) || (msg.content.startsWith('*'))) {
 		switch (msg.content.split(' ')[0]) {
 			case '!money':
-				ecn_cmd.money(msg, cmd_lang)
+				ecn_cmd.money(msg, mongo_client)
 				break
 			case '!daily':
-				ecn_cmd.daily(msg, cmd_lang)
+				ecn_cmd.daily(msg, mongo_client)
 				break
 			case '!owl':
 				if (cooldown_owl === 0) {
@@ -40,45 +34,39 @@ client.on('message', msg => {
 				}
 				break
 			case '!rr':
-				fun_cmd.rr(msg, cmd_lang)
+				fun_cmd.rr(msg, mongo_client)
 				break
 			case '!prb':
-				fun_cmd.prb(msg, cmd_lang)
+				fun_cmd.prb(msg, mongo_client)
 				break
 			case '!egg':
-				fun_cmd.egg(msg, cmd_lang)
+				fun_cmd.egg(msg, mongo_client)
 				break
 			case '!help':
-				help(msg, cmd_lang)
+				help(msg, mongo_client)
 				break
 			case '*lang':
 				if (msg.member.hasPermission("ADMINISTRATOR")) {
-					if (msg.content === '*lang') {
-						if (eval("JSON.parse(fs.readFileSync('./data/language.json')).g"+msg.guild.id) !== undefined) {
-							msg.channel.send(eval("JSON.parse(fs.readFileSync('./data/language.json')).g"+msg.guild.id))
-						}
-						else {
-							eval("lang.g"+msg.guild.id+" = 'en'")
-							fs.writeFileSync('./data/language.json', JSON.stringify(lang), 'utf-8')
-							msg.channel.send(eval("JSON.parse(fs.readFileSync('./data/language.json')).g"+msg.guild.id))
-						}
-					}
-					else {
-						switch (msg.content.split(' ')[1]) {
-							default:
-								msg.channel.send('Only "en" and "ru" can be used with *lang')
-								break
-							case 'en':
-								eval("lang.g"+msg.guild.id+" = 'en'")
-								fs.writeFileSync('./data/language.json', JSON.stringify(lang), 'utf-8')
-								break
-							case 'ru':
-								eval("lang.g"+msg.guild.id+" = 'ru'")
-								fs.writeFileSync('./data/language.json', JSON.stringify(lang), 'utf-8')
-								break
-						}
+					switch (msg.content.split(' ')[1]) {
+						case 'en':
+							database.setValue(mongo_client, msg.guild.id, 'language', 'en')
+							break
+						case 'ru':
+							database.setValue(mongo_client, msg.guild.id, 'language', 'ru')
+							break
 					}
 				}
 				break
 		
-}}})
+}}})})
+
+const express = require('express');
+
+  var app = express();
+
+  app.get('/', function (req, res) {
+    res.send(`Бот работает
+    The bot is working`);
+  })
+
+  app.listen(process.env.PORT)

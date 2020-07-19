@@ -1,4 +1,5 @@
 const fs = require('fs')
+const database = require('./database.js')
 const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
@@ -30,28 +31,28 @@ function msToTime(s, lang) {
 	return result
 }
 
-async function money(msg, lang) {
-	var money_amount = eval(`JSON.parse(fs.readFileSync('./data/money.json')).u${msg.member.user.id}`)
+async function money(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	var money_amount = await database.getValue(mongo_client, msg.member.user.id, 'money')
 	if (money_amount === undefined) {money_amount = 0}
 	var response = eval(`${lang}.money_reply1`)+money_amount+eval(`${lang}.money_reply2`)
 	msg.reply(response)
 }
 
-async function daily(msg, lang) {
-	var rewarded = 'u'+msg.member.user.id
-	var money = JSON.parse(fs.readFileSync('./data/money.json'))
-	var daily_cooldown = JSON.parse(fs.readFileSync('./data/daily-cooldown.json'))
-	if ((eval('daily_cooldown.'+rewarded) === undefined) || (eval(`daily_cooldown.${rewarded}`) <= Date.now())) {
+async function daily(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	var rewarded = msg.member.user.id
+	var money = await database.getValue(mongo_client, rewarded, 'money')
+	var daily_cooldown = await database.getValue(mongo_client, rewarded, 'daily-cooldown')
+	if ((daily_cooldown === undefined) || (daily_cooldown <= Date.now())) {
 		var cooldown_exp = Date.now()+86400000
-		eval(`daily_cooldown.${rewarded}=${cooldown_exp}`)
-		fs.writeFileSync('./data/daily-cooldown.json', JSON.stringify(daily_cooldown), 'UTF-8')
-		if (eval(`money.${rewarded}`) === undefined) {eval(`money.${rewarded}=0`)}
-		eval(`money.${rewarded}=money.${rewarded}+100`)
-		fs.writeFileSync('./data/money.json', JSON.stringify(money), 'UTF-8')
+		database.setValue(mongo_client, rewarded, 'daily-cooldown', cooldown_exp)
+		if (money === undefined) {database.setValue(mongo_client, rewarded, 'money', 0)}
+		database.incValue(mongo_client, rewarded, 'money', 100)
 		msg.channel.send(eval(`${lang}.daily_reward`))
 	}
 	else {
-		var time_left = msToTime(eval(`daily_cooldown.${rewarded}`)-Date.now(), lang)
+		var time_left = msToTime(await database.getValue(mongo_client, rewarded, 'daily-cooldown')-Date.now(), lang)
 		msg.channel.send(eval(`${lang}.daily_left`)+time_left)
 	}
 }
