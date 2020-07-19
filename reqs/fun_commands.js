@@ -53,18 +53,20 @@ async function egg(msg, mongo_client) {
 		msg.channel.send(msg.member.user.username+eval(`${lang}.egg_undefined`))
 	}
 	else {
-		egg_count = await database.getValue(mongo_client, egged.id, 'egg_count')
+		egg_count = await database.getValue(mongo_client, egged.id, 'egg-count')
 		if (egg_count === (NaN||null||undefined)) {
 			database.setValue(mongo_client, egged.id, 'egg-count', 1)
+			egg_count = 1
 		}
 		else {
 			database.incValue(mongo_client, egged.id, 'egg-count', 1)
+			egg_count = egg_count + 1
 		}
 		if (egger.id === egged.id) {
 			msg.channel.send(egger.username+eval(`${lang}.egg_self`)+egged.username+': '+egg_count)
 		}
 		else {
-			msg.channel.send(egger.username+eval(`${lang}.egg_someone1`)+egged+eval(`${lang}.egg_someone2`)+egged.username+': '+egg_count)
+			msg.channel.send(egger.username+eval(`${lang}.egg_someone1`)+egged.username+eval(`${lang}.egg_someone2`)+egged.username+': '+egg_count)
 		}
 	}
 }
