@@ -5,9 +5,10 @@ const database = require('./database.js')
 const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
-async function owl(msg) {
-	const attachment = new MessageAttachment(http.owl())
-	await msg.channel.send(attachment);
+function owl(msg) {
+	const attachment = new MessageAttachment('./owl.jpg')
+	msg.channel.send(attachment)
+	http.owl()
 }
 
 async function rr(msg, mongo_client) {

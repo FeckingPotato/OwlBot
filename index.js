@@ -10,9 +10,11 @@ const fun_cmd = require('./reqs/fun_commands.js')
 const ecn_cmd = require('./reqs/economy_commands.js')
 const help = require('./reqs/help.js').help
 const database = require('./reqs/database.js')
+const http = require('./reqs/http-functions.js')
 
 var cooldown_owl = 0
-var language
+
+http.owl()
 
 mongo_client.connect(() => {
 discord_client.login(token)
