@@ -6,9 +6,8 @@ const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
 async function owl(msg) {
-	await http.owl()
-	const attachment = new MessageAttachment('./owl.jpg')
-	msg.channel.send(attachment);
+	const attachment = new MessageAttachment(http.owl())
+	await msg.channel.send(attachment);
 }
 
 async function rr(msg, mongo_client) {

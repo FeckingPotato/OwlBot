@@ -19,7 +19,7 @@ function owl(){
 	var owl_parse = JSON.parse(owl_get) 
 	var owl_url = owl_parse.urls.small
 	download(owl_url, owl_options);
-	return
+	return './owl.jpg'
 }
 
 function translate(txt, lang){
