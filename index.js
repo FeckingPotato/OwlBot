@@ -21,6 +21,7 @@ mongo_client.connect(() => {
 	console.log('working')
 	discord_client.on('message', msg => {
 		if (msg.content.startsWith('!')) {
+			if (database.getValue(mongo_client, msg.guild.id, 'language') != ('en' || 'ru')) {database.setValue(mongo_client, msg.guild.id, 'language', 'en')}
 			switch (msg.content.split(' ')[0]) {
 				case '!money':
 					ecn_cmd.money(msg, mongo_client)

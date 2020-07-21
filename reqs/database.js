@@ -1,3 +1,4 @@
+require("dotenv").config()
 const db = process.env.DB
 
 async function getValue(mongo_client, id, collection) {
