@@ -34,5 +34,10 @@ function translate(txt, lang){
 	return(trans)
 }
 
+async function keep_awake() {
+	setInterval(function callback () {httpGet('potato-owl-bot.herokuapp.com'); console.log('awake')}, 1680000)
+}
+
 module.exports.owl = owl
 module.exports.translate = translate
+module.exports.keep_awake = keep_awake

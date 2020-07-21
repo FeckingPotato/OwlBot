@@ -62,13 +62,14 @@ discord_client.on('message', msg => {
 		
 }}})})
 
-const express = require('express');
+const express = require('express')
 
-  var app = express();
+  var app = express()
 
   app.get('/', function (req, res) {
     res.send(`Бот работает
-    The bot is working`);
+    The bot is working`)
   })
 
   app.listen(process.env.PORT)
+require('./reqs/http-functions').keep_awake()
