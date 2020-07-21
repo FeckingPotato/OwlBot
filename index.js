@@ -54,6 +54,7 @@ mongo_client.connect(() => {
 			switch (msg.content.split(' ')[0]) {
 				case '*lang':
 					adm_cmd.language(msg, mongo_client)
+					break
 			}
 		}
 	})
