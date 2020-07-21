@@ -16,7 +16,6 @@ const http = require('./reqs/http-functions.js')
 var cooldown_owl = 0
 
 http.owl()
-
 mongo_client.connect(() => {
 	discord_client.login(token)
 	console.log('working')
@@ -70,4 +69,4 @@ const express = require('express')
   })
 
   app.listen(process.env.PORT)
-require('./reqs/http-functions').keep_awake()
+http.keep_awake()
