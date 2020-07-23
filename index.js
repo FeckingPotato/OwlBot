@@ -6,56 +6,24 @@ const discord_client = new Client()
 const {MongoClient} = require('mongodb')
 const mongo_client = new MongoClient(process.env.URI, {useUnifiedTopology: true})
 
-const fun_cmd = require('./reqs/fun_commands.js')
-const ecn_cmd = require('./reqs/economy_commands.js')
+const usr_cmd = require('./reqs/user_commands.js')
 const adm_cmd = require('./reqs/admin_commands.js')
-const help = require('./reqs/help.js').help
 const database = require('./reqs/database.js')
 const http = require('./reqs/http-functions.js')
 
-var cooldown_owl = 0
-
-http.owl()
+//http.owl()
 mongo_client.connect(() => {
 	discord_client.login(token)
 	console.log('working')
 	discord_client.on('message', msg => {
 		if (msg.content.startsWith('!')) {
-			if (database.getValue(mongo_client, msg.guild.id, 'language') != ('en' || 'ru')) {database.setValue(mongo_client, msg.guild.id, 'language', 'en')}
-			switch (msg.content.split(' ')[0]) {
-				case '!money':
-					ecn_cmd.money(msg, mongo_client)
-					break
-				case '!daily':
-					ecn_cmd.daily(msg, mongo_client)
-					break
-				case '!owl':
-					if (cooldown_owl === 0) {
-						fun_cmd.owl(msg)
-						cooldown_owl = 1
-						setTimeout(() => cooldown_owl = 0, 2000)
-					}
-					break
-				case '!rr':
-					fun_cmd.rr(msg, mongo_client)
-					break
-				case '!prb':
-					fun_cmd.prb(msg, mongo_client)
-					break
-				case '!egg':
-					fun_cmd.egg(msg, mongo_client)
-					break
-				case '!help':
-					help(msg, mongo_client)
-					break
-			}
+			if (database.getValue(mongo_client, msg.guild.id, 'language') === undefined) {database.setValue(mongo_client, msg.guild.id, 'language', 'en')}
+			try {eval(`usr_cmd.${msg.content.split(' ')[0].replace('!', '')}(msg, mongo_client)`)}
+			catch (error) {console.log(error)}
 		}
-		else if ((msg.content.startsWith('*')) || (msg.member.hasPermission("ADMINISTRATOR"))) {
-			switch (msg.content.split(' ')[0]) {
-				case '*lang':
-					adm_cmd.language(msg, mongo_client)
-					break
-			}
+		else if ((msg.content.startsWith('*')) && (msg.member.hasPermission("ADMINISTRATOR"))) {
+			try {eval(`adm_cmd.${msg.content.split(' ')[0].replace('*', '')}(msg, mongo_client)`)}
+			catch (error) {console.log(error)}
 		}
 	})
 })
@@ -70,4 +38,3 @@ const express = require('express')
   })
 
   app.listen(process.env.PORT)
-http.keep_awake()

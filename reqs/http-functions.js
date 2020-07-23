@@ -22,22 +22,4 @@ function owl(){
 	return 
 }
 
-function translate(txt, lang){
-	txt = txt.toString()
-	if (typeof lang !== 'string') {
-		throw 'lang_err'
-	}
-	var trans = JSON.parse(httpGet(encodeURI('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200516T102935Z.bf6371f55c4f20bb.3f00dda15daedbd9b3d19e97bdf94c42d9e86ad5&&lang='+lang+'&text='+txt))).text
-	if (trans === undefined) {
-		throw 'lang_err'
-	}
-	return(trans)
-}
-
-async function keep_awake() {
-	setInterval(function callback () {httpGet('potato-owl-bot.herokuapp.com'); console.log('awake')}, 1680000)
-}
-
 module.exports.owl = owl
-module.exports.translate = translate
-module.exports.keep_awake = keep_awake
