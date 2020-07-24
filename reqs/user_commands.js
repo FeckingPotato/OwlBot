@@ -156,7 +156,7 @@ async function daily(msg, mongo_client) {
 }
 
 async function shop(msg, mongo_client) {
-	msg.channel.send
+	msg.channel.send(`${lang}.shop`)
 }
 
 module.exports.help = help

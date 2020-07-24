@@ -1,7 +1,7 @@
 require("dotenv").config()
 const token = process.env.TOKEN
 
-const {Discord, Client, MessageAttachment} = require('discord.js')
+const {Client} = require('discord.js')
 const discord_client = new Client()
 const {MongoClient} = require('mongodb')
 const mongo_client = new MongoClient(process.env.URI, {useUnifiedTopology: true})

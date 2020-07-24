@@ -14,6 +14,8 @@
     "money_reply2": " moneys",
     "daily_reward": "You got the daily reward (100 moneys), the next reward will be available in 24 hours",
     "daily_left": "Time left until the daily reward: ",
+    "shop": "The shop will be here soon",
+    "set_lang": "The bot language is English now",
     "help_help": "help - helps you",
     "help_owl": "owl - sends a random photo of a random owl by using Unsplash, that can take some time due to bad performance of the server",
     "help_rr": "rr - allows you to play Russian roullete, in case of death you become 'ded'",
