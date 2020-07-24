@@ -156,7 +156,18 @@ async function daily(msg, mongo_client) {
 }
 
 async function shop(msg, mongo_client) {
-	msg.channel.send(`${lang}.shop`)
+	var roles_arr = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
+	if (roles_arr === undefined ^ []) {msg.channel.send('There are no roles available for sale')}
+	else {
+		var list = `List of the available roles:
+`
+		for (i = 0; i < roles_arr.length; i++) {
+			var role = await msg.guild.roles.fetch(roles_arr[i].role_id)
+			list = list + `${i+1}. "${role.name}" -  ${await roles_arr[i].role_price} moneys
+`
+		}
+		msg.channel.send(list)
+	}
 }
 
 module.exports.help = help
