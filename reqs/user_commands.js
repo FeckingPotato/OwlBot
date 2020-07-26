@@ -161,9 +161,10 @@ async function shop(msg, mongo_client) {
 	else {
 		var list = `List of the available roles:
 `
+		let backtick = '`'
 		for (i = 0; i < roles_arr.length; i++) {
 			var role = await msg.guild.roles.fetch(roles_arr[i].role_id)
-			list = list + `${i+1}. "${role.name}" -  ${await roles_arr[i].role_price} moneys
+			list = list + `${i+1}. ${backtick}${role.name}${backtick} -  ${await roles_arr[i].role_price} moneys
 `
 		}
 		msg.channel.send(list)
