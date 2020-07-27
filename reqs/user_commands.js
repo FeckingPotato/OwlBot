@@ -171,21 +171,22 @@ async function shop(msg, mongo_client) {
 }
 
 async function buy_role(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
 	let msg_array = msg.content.split(' ')
 	msg_array.splice(0, 1)
 	let role_name = msg_array.join(' ')
 	if (role_name === '') {
-		msg.channel.send('You should specify the role you want to buy')
+		msg.reply(eval(`${lang}.buy_undefined`))
 		return
 	}
 	role = msg.guild.roles.cache.find(role => role.name === role_name)
 	if (role === undefined) {
-		msg.channel.send(`The role ${'`'}${role_name}${'`'} doesn't exist`)
+		msg.reply(eval(`${lang}.buy_nonexistent1`)+`${'`'}${role_name}${'`'}`+eval(`${lang}.buy_nonexistent2`))
 		return
 	}
 	let has_role = msg.member.roles.cache.find(role => role.name === role_name)
 	if (has_role !== undefined) {
-		msg.channel.send(`You have that role already`)
+		msg.reply(eval(`${lang}.buy_owned`))
 		return
 	}
 	let roles_db = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
@@ -200,13 +201,13 @@ async function buy_role(msg, mongo_client) {
 					await msg.member.roles.add(role)
 					database.incValue(mongo_client, msg.member.user.id, 'money', payment)
 				}
-				catch {msg.channel.send('Error: for some reason this role can not be assigned by a bot, contact a real person to buy it')}
+				catch {msg.reply(eval(`${lang}.buy_error`))}
 			}
-			else msg.channel.send('You do not have enough money')
+			else msg.reply(eval(`${lang}.buy_notenoughcashstranger`))
 		}
 	}
 	if (buyable === undefined) {
-		msg.channel.send('You can not buy that role')
+		msg.reply(eval(`${lang}.buy_unavailable`))
 	}
 }
 
