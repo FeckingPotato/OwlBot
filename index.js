@@ -26,6 +26,18 @@ mongo_client.connect(() => {
 			catch (error) {console.log(error)}
 		}
 	})
+	discord_client.on('roleDelete', async function (role) {
+		var roles = await database.getValue(mongo_client, role.guild.id, 'role_prices')
+		var i
+		for (i = 0; i < roles.length; i++) {
+			if (role.id == Object.values(roles[i])[0]) {
+				roles.splice(i, 1)
+				console.log(roles)
+				database.setValue(mongo_client, role.guild.id, 'role_prices', roles)
+				break
+			}
+		}
+	})
 })
 
 const express = require('express')
