@@ -170,6 +170,46 @@ async function shop(msg, mongo_client) {
 	}
 }
 
+async function buy_role(msg, mongo_client) {
+	let msg_array = msg.content.split(' ')
+	msg_array.splice(0, 1)
+	let role_name = msg_array.join(' ')
+	if (role_name === '') {
+		msg.channel.send('You should specify the role you want to buy')
+		return
+	}
+	role = msg.guild.roles.cache.find(role => role.name === role_name)
+	if (role === undefined) {
+		msg.channel.send(`The role ${'`'}${role_name}${'`'} doesn't exist`)
+		return
+	}
+	let has_role = msg.member.roles.cache.find(role => role.name === role_name)
+	if (has_role !== undefined) {
+		msg.channel.send(`You have that role already`)
+		return
+	}
+	let roles_db = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
+	let money = await database.getValue(mongo_client, msg.member.user.id, 'money')
+	var i, buyable
+	for (i = 0; i < roles_db.length; i++) {
+		if ((Object.values(roles_db[i])[0] == role.id)) {
+			buyable = true
+			if (roles_db[i].role_price <= money) {
+				let payment = -roles_db[i].role_price
+				try {
+					await msg.member.roles.add(role)
+					database.incValue(mongo_client, msg.member.user.id, 'money', payment)
+				}
+				catch {msg.channel.send('Error: for some reason this role can not be assigned by a bot, contact a real person to buy it')}
+			}
+			else msg.channel.send('You do not have enough money')
+		}
+	}
+	if (buyable === undefined) {
+		msg.channel.send('You can not buy that role')
+	}
+}
+
 module.exports.help = help
 module.exports.owl = owl
 module.exports.rr = rr
@@ -178,3 +218,4 @@ module.exports.egg = egg
 module.exports.money = money
 module.exports.daily = daily
 module.exports.shop = shop
+module.exports.buy_role = buy_role
