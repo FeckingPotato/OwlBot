@@ -7,32 +7,12 @@ const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
 async function help(msg, mongo_client) {
 	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
-	switch(msg.content.split(' ')[1]) {
-		default:
-			msg.channel.send(eval(`${lang}.help_main`)) // this thing throws 'SyntaxError: Unexpected token (' for some reason
-			break
-		case 'help':
-			msg.channel.send(eval(`${lang}.help_help`))
-			break
-		case 'owl': 
-			msg.channel.send(eval(`${lang}.help_owl`))
-			break
-		case 'prb':
-			msg.channel.send(eval(`${lang}.help_prb`))
-			break
-		case 'egg':
-			msg.channel.send(eval(`${lang}.help_egg`))
-			break
-		case 'rr':
-			msg.channel.send(eval(`${lang}.help_rr`))
-			break
-		case 'daily':
-			msg.channel.send(eval(`${lang}.help_daily`))
-			break
-		case 'money':
-			msg.channel.send(eval(`${lang}.help_money`))
-			break
+	try {
+		var command = msg.content.split(' ')[1]
+		if (command === undefined) msg.channel.send(eval(`${lang}.help_main`))
+		else msg.channel.send(eval(`${lang}.help_${command}`))
 	}
+	catch (error) {console.log(error)}
 }
 
 function owl(msg) {
