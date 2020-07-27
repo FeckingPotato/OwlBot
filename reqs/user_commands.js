@@ -156,15 +156,14 @@ async function daily(msg, mongo_client) {
 }
 
 async function shop(msg, mongo_client) {
+	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
 	var roles_arr = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
-	if (roles_arr === undefined ^ []) {msg.channel.send('There are no roles available for sale')}
+	if (roles_arr === undefined ^ []) {msg.channel.send(eval(`${lang}.shop_unavailable`))}
 	else {
-		var list = `List of the available roles:
-`
+		var list = eval(`${lang}.shop_available`)
 		for (i = 0; i < roles_arr.length; i++) {
 			var role = await msg.guild.roles.fetch(roles_arr[i].role_id)
-			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ${await roles_arr[i].role_price} moneys
-`
+			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ${await roles_arr[i].role_price}`+eval(`${lang}.shop_moneys`)
 		}
 		msg.channel.send(list)
 	}
