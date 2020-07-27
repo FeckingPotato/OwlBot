@@ -24,6 +24,7 @@
     "buy_error": "Error: for some reason this role can not be assigned by a bot, contact a real person to buy it",
     "buy_notenoughcashstranger": "you do not have enough money",
     "buy_unavailable": "you can not buy that role",
+    "buy_success": " has just bought the role ",
     "set_lang": "The bot's language is English now",
     "help_help": "help - helps you",
     "help_owl": "owl - sends a random photo of a random owl by using Unsplash, that can take some time due to bad performance of the server",

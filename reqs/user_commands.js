@@ -178,7 +178,8 @@ async function buy_role(msg, mongo_client) {
 				let payment = -roles_db[i].role_price
 				try {
 					await msg.member.roles.add(role)
-					database.incValue(mongo_client, msg.member.user.id, 'money', payment)
+					await database.incValue(mongo_client, msg.member.user.id, 'money', payment)
+					await msg.channel.send(`${msg.member}`+eval(`${lang}.buy_success`)+`${'`'}${role_name}${'`'}`)
 				}
 				catch {msg.reply(eval(`${lang}.buy_error`))}
 			}
