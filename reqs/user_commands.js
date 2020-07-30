@@ -192,6 +192,7 @@ async function buy_role(msg, mongo_client) {
 }
 
 async function pay(msg, mongo_client) {
+	let lang = await database.getValue(mongo_client, msg.guild.id, 'language')
 	let payer = await msg.member.user
 	let paid = await msg.mentions.users.first()
 	let money = parseInt(await msg.content.split(' ')[2])
@@ -204,7 +205,7 @@ async function pay(msg, mongo_client) {
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
 			await database.incValue(mongo_client, payer.id, 'money', -money)
-			msg.reply(eval(`${lang}.pay_success1`) + money + eval(`${lang}.pay_success2`) + paid)
+			msg.reply(eval(`${lang}.pay_success1`) + money + eval(`${lang}.pay_success2`) + `${'`'}${paid.username}${'`'}`)
 
 		}
 	}
