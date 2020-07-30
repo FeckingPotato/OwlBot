@@ -183,7 +183,7 @@ async function buy_role(msg, mongo_client) {
 				}
 				catch {msg.reply(eval(`${lang}.buy_error`))}
 			}
-			else msg.reply(eval(`${lang}.buy_notenoughcashstranger`))
+			else msg.reply(eval(`${lang}.notenoughcashstranger`))
 		}
 	}
 	if (buyable === undefined) {
@@ -195,16 +195,16 @@ async function pay(msg, mongo_client) {
 	let payer = await msg.member.user
 	let paid = await msg.mentions.users.first()
 	let money = parseInt(await msg.content.split(' ')[2])
-	if (paid === undefined) msg.channel.send('You should specify the person you are paying to')
-	else if (money === undefined) msg.channel.send('You should specify the amount of money you want to pay')
-	else if (money % 1 !== 0 || money < 0) msg.channel.send('The amount of money should be a positive ineger')
+	if (paid === undefined) msg.channel.send(eval(`${lang}.pay_person`))
+	else if (money === undefined) msg.channel.send(eval(`${lang}.pay_money`))
+	else if (money % 1 !== 0 || money < 0) msg.channel.send(eval(`${lang}.pay_integer`))
 	else {
 		let money_payer = await database.getValue(mongo_client, payer, 'money')
-		if (money_payer < money) msg.reply('You do not have enough money')
+		if (money_payer < money) msg.reply(eval(`${lang}.notenoughcashstranger`))
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
 			await database.incValue(mongo_client, payer.id, 'money', -money)
-			msg.reply(`you paid ${money} moneys to ${paid}`)
+			msg.reply(eval(`${lang}.pay_success1`) + money + eval(`${lang}.pay_success2`) + paid)
 
 		}
 	}
