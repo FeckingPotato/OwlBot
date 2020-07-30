@@ -191,6 +191,27 @@ async function buy_role(msg, mongo_client) {
 	}
 }
 
+async function pay(msg, mongo_client) {
+	let payer = await msg.member.user
+	let paid = await msg.mentions.users.first()
+	let money = parseInt(await msg.content.split(' ')[2])
+	console.log(money)
+	if (paid === undefined) msg.channel.send('You should specify the person you are paying to')
+	else if (money === undefined) msg.channel.send('You should specify the amount of money you want to pay')
+	else if (money % 1 !== 0 || money < 0) msg.channel.send('The amount of money should be a positive ineger')
+	else {
+		let money_payer = await database.getValue(mongo_client, payer, 'money')
+		if (money_payer < money) msg.channel.send('You do not have enough money')
+		else {
+			await database.incValue(mongo_client, paid.id, 'money', money)
+			await database.incValue(mongo_client, payer.id, 'money', -money)
+			msg.reply(`you paid ${money} moneys to ${paid}`)
+
+		}
+	}
+
+}
+
 module.exports.help = help
 module.exports.owl = owl
 module.exports.rr = rr
@@ -200,3 +221,4 @@ module.exports.money = money
 module.exports.daily = daily
 module.exports.shop = shop
 module.exports.buy_role = buy_role
+module.exports.pay = pay
