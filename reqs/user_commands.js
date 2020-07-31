@@ -113,9 +113,8 @@ async function money(msg, mongo_client) {
 	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
 	var money = await database.getValue(mongo_client, msg.member.user.id, 'money')
 	if (money === undefined) {money = 0}
-	money = String(money)
 	let money_string = ''
-	let money_lastnumber = money.split('').reverse()[0]
+	let money_lastnumber = String(money).split('').reverse()[0]
 	if (money_lastnumber == 1) money_string = eval(`${lang}.money_reply2_single`)
 	else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.money_reply2_many`)
 	else money_string = eval(`${lang}.money_reply2_24`)
@@ -217,9 +216,8 @@ async function pay(msg, mongo_client) {
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
 			await database.incValue(mongo_client, payer.id, 'money', -money)
-			money = String(money)
 			let money_string = ''
-			let money_lastnumber = money.split('').reverse()[0]
+			let money_lastnumber = String(money).split('').reverse()[0]
 			if (money_lastnumber == 1) money_string = eval(`${lang}.pay_success2_single`)
 			else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.pay_success2_many`)
 			else money_string = eval(`${lang}.pay_success2_24`)
