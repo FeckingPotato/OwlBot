@@ -212,7 +212,7 @@ async function pay(msg, mongo_client) {
 	else if (money === undefined) msg.channel.send(eval(`${lang}.pay_money`))
 	else if (money % 1 !== 0 || money < 0) msg.channel.send(eval(`${lang}.pay_integer`))
 	else {
-		let money_payer = await database.getValue(mongo_client, payer, 'money')
+		let money_payer = await database.getValue(mongo_client, payer.id, 'money')
 		if (money_payer < money) msg.reply(eval(`${lang}.notenoughcashstranger`))
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
