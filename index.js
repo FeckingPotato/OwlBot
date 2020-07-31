@@ -5,13 +5,15 @@ const {Client} = require('discord.js')
 const discord_client = new Client()
 const {MongoClient} = require('mongodb')
 const mongo_client = new MongoClient(process.env.URI, {useUnifiedTopology: true})
+const fs = require('fs')
 
 const usr_cmd = require('./reqs/user_commands.js')
 const adm_cmd = require('./reqs/admin_commands.js')
 const database = require('./reqs/database.js')
 const http = require('./reqs/http-functions.js')
 
-//http.owl()
+fs.exists('./owl.jpg', exists => {if (!exists) http.owl()})
+
 mongo_client.connect(() => {
 	discord_client.login(token)
 	console.log('working')
@@ -41,6 +43,7 @@ mongo_client.connect(() => {
 })
 
 const express = require('express')
+const { fstat } = require("fs")
 
   var app = express()
 
