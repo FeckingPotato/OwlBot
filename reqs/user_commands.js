@@ -111,9 +111,15 @@ function msToTime(s, lang) {
 
 async function money(msg, mongo_client) {
 	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
-	var money_amount = await database.getValue(mongo_client, msg.member.user.id, 'money')
-	if (money_amount === undefined) {money_amount = 0}
-	var response = eval(`${lang}.money_reply1`)+money_amount+eval(`${lang}.money_reply2`)
+	var money = await database.getValue(mongo_client, msg.member.user.id, 'money')
+	if (money === undefined) {money = 0}
+	money = String(money)
+	let money_string = ''
+	let money_lastnumber = money.split('').reverse()[0]
+	if (money_lastnumber == 1) money_string = eval(`${lang}.money_reply2_single`)
+	else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.money_reply2_many`)
+	else money_string = eval(`${lang}.money_reply2_24`)
+	var response = eval(`${lang}.money_reply1`) + money + money_string
 	msg.reply(response)
 }
 
@@ -143,7 +149,13 @@ async function shop(msg, mongo_client) {
 		var list = eval(`${lang}.shop_available`)
 		for (i = 0; i < roles_arr.length; i++) {
 			var role = await msg.guild.roles.fetch(roles_arr[i].role_id)
-			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ${await roles_arr[i].role_price}`+eval(`${lang}.shop_moneys`)
+			var role_price = await roles_arr[i].role_price
+			let money_string = ''
+			let money_lastnumber = String(role_price).split('').reverse()[0]
+			if (money_lastnumber == 1) money_string = eval(`${lang}.shop_moneys_single`)
+			else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.shop_moneys_many`)
+			else money_string = eval(`${lang}.shop_moneys_24`)
+			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ${role_price}`+ money_string
 		}
 		msg.channel.send(list)
 	}
@@ -205,11 +217,15 @@ async function pay(msg, mongo_client) {
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
 			await database.incValue(mongo_client, payer.id, 'money', -money)
-			msg.reply(eval(`${lang}.pay_success1`) + money + eval(`${lang}.pay_success2`) + `${'`'}${paid.username}${'`'}`)
-
+			money = String(money)
+			let money_string = ''
+			let money_lastnumber = money.split('').reverse()[0]
+			if (money_lastnumber == 1) money_string = eval(`${lang}.pay_success2_single`)
+			else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.pay_success2_many`)
+			else money_string = eval(`${lang}.pay_success2_24`)
+			msg.reply(eval(`${lang}.pay_success1`) + money + money_string + `${'`'}${paid.username}${'`'}`)
 		}
 	}
-
 }
 
 module.exports.help = help
