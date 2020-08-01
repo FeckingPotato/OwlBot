@@ -18,12 +18,18 @@ async function lang(msg, mongo_client) {
 
 async function setPaidRole(msg, mongo_client) {
     var msg_split = await msg.content.split(' ')
-    if (await msg_split.length != 3) {msg.channel.send('The command syntax is incorrect'); throw 'incorrect syntax'}
+    if (await msg_split.length != 3) {
+        msg.channel.send('The command syntax is incorrect')
+        throw 'incorrect syntax'
+    }
     var role_id = await msg_split[1]
     var role_price = parseInt(msg_split[2])
-    if (await msg.guild.roles.fetch(role_id) === null) {msg.channel.send('This role does not exist'); throw 'incorrect role id'}
+    if (await msg.guild.roles.fetch(role_id) === null) {
+        msg.channel.send('This role does not exist')
+        throw 'incorrect role id'
+    }
     var roles = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
-    if (roles === undefined ^ null) {roles = []}
+    if (roles === undefined ^ null) roles = []
     var i, exists, same_price, existing_position
     try {
        for (i = 0; i < roles.length; i++) {
