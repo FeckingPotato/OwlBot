@@ -47,5 +47,5 @@
     "help_shop": "shop - lists all the available to buy roles (and that's all it does)",
     "help_buy_role": "buy_role <role> - allows you to buy a role, <role> - the name of the role without quotation marks",
     "help_pay": "pay <someone> <amount> - allows you to pay <amount> moneys to <someone>",
-    "help_main": "! - command prefix\nhelp - get this list of commands\nowl - get a photo of an owl\nrr - play Russian roulette\nprb <something> - probability of something\negg <@person> - throw an egg at someone\nmoney - display the amount of money you have\ndaily - get the daily reward\nshop - lists all the available to buy roles\nbuy_role <role> - allows you to buy the <role> role\npay <someone> <amount> - allows you to pay to other people\nBetter command description: !help <command>"
+    "help_main": "! - command prefix\nhelp - get this list of commands\nowl - get a photo of an owl\nrr - play Russian roulette\nprb <something> - get the probability of something\negg <@person> - throw an egg at someone\nmoney - get the amount of money you have\ndaily -collect the daily reward\nshop - get all the available to buy roles\nbuy_role <role> - allows you to buy the <role> role\npay <someone> <amount> - allows you to pay to other people\nBetter command description: !help <command>"
 }
