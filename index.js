@@ -43,7 +43,6 @@ mongo_client.connect(() => {
 })
 
 const express = require('express')
-const { fstat } = require("fs")
 
   var app = express()
 
