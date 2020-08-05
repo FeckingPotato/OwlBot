@@ -6,11 +6,11 @@ const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 async function lang(msg, mongo_client) {
     switch (msg.content.split(' ')[1]) {
         case 'en':
-            database.setValue(mongo_client, msg.guild.id, 'language', 'en')
+            database.setValue(mongo_client, msg.channel.id, 'language', 'en')
             msg.channel.send(en.set_lang)
             break
        case 'ru':
-            database.setValue(mongo_client, msg.guild.id, 'language', 'ru')
+            database.setValue(mongo_client, msg.channel.id, 'language', 'ru')
             msg.channel.send(ru.set_lang)
             break
     }

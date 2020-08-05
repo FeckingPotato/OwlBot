@@ -6,7 +6,7 @@ const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
 async function help(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	try {
 		var command = msg.content.split(' ')[1]
 		if (command === undefined) msg.channel.send(eval(`${lang}.help_main`))
@@ -22,7 +22,7 @@ function owl(msg) {
 }
 
 async function rr(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	var ded_role = msg.guild.roles.cache.find(role => role.name === 'ded')
 	var ded_role_member = msg.member.roles.cache.find(role => role.name === 'ded')
 	if (ded_role === undefined) msg.channel.send(eval(`${lang}.rr_undefined`))
@@ -40,13 +40,13 @@ async function rr(msg, mongo_client) {
 }
 
 async function prb(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	if (msg.content === '!prb') msg.reply(eval(`${lang}.prb_nothing`))
 	else msg.reply(eval(`${lang}.prb_something`)+Math.floor(Math.random()*100)+'%')
 }
 
 async function egg(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	var egger = msg.member.user
 	var egged = msg.mentions.users.first()
 	if (egged === undefined) msg.channel.send(msg.member.user.username+eval(`${lang}.egg_undefined`))
@@ -94,7 +94,7 @@ function msToTime(s, lang) {
 }
 
 async function money(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	var money = await database.getValue(mongo_client, msg.member.user.id, 'money')
 	if (money === undefined) {money = 0}
 	let money_string = ''
@@ -107,7 +107,7 @@ async function money(msg, mongo_client) {
 }
 
 async function daily(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	var rewarded = msg.member.user.id
 	var money = await database.getValue(mongo_client, rewarded, 'money')
 	var daily_cooldown = await database.getValue(mongo_client, rewarded, 'daily-cooldown')
@@ -125,7 +125,7 @@ async function daily(msg, mongo_client) {
 }
 
 async function shop(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	var roles_arr = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
 	if (roles_arr === undefined ^ []) msg.channel.send(eval(`${lang}.shop_unavailable`))
 	else {
@@ -145,7 +145,7 @@ async function shop(msg, mongo_client) {
 }
 
 async function buy_role(msg, mongo_client) {
-	var lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	let msg_array = msg.content.split(' ')
 	msg_array.splice(0, 1)
 	let role_name = msg_array.join(' ')
@@ -182,7 +182,7 @@ async function buy_role(msg, mongo_client) {
 }
 
 async function pay(msg, mongo_client) {
-	let lang = await database.getValue(mongo_client, msg.guild.id, 'language')
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	let payer = await msg.member.user
 	let paid = await msg.mentions.users.first()
 	let money = parseInt(await msg.content.split(' ')[2])

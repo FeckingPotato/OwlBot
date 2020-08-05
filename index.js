@@ -17,9 +17,10 @@ fs.exists('./owl.jpg', exists => {if (!exists) http.owl()})
 mongo_client.connect(() => {
 	discord_client.login(token)
 	console.log('working')
-	discord_client.on('message', msg => {
+	discord_client.on('message', async function (msg) {
 		if (msg.content.startsWith('!')) {
-			if (database.getValue(mongo_client, msg.guild.id, 'language') === undefined) {database.setValue(mongo_client, msg.guild.id, 'language', 'en')}
+			var lang = await database.getValue(mongo_client, msg.channel.id, 'language')
+			if (lang === undefined) {database.setValue(mongo_client, msg.channel.id, 'language', 'en')}
 			try {eval(`usr_cmd.${msg.content.split(' ')[0].replace('!', '')}(msg, mongo_client)`)}
 			catch (error) {console.log(error)}
 		}
