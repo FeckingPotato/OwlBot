@@ -185,7 +185,7 @@ async function pay(msg, mongo_client) {
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
 			await database.incValue(mongo_client, payer.id, 'money', -money)
-			msg.reply(eval(`${lang}.pay_success1`) + '₴‎' +money + eval(`${lang}.pay_success2`) + `${'`'}${paid.username}${'`'}`)
+			msg.reply(`${eval(`${lang}.pay_success`)}₴‎${money} ${`${'`'}${paid.username}${'`'}`}`)
 		}
 	}
 }
