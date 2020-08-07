@@ -97,12 +97,7 @@ async function money(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	var money = await database.getValue(mongo_client, msg.member.user.id, 'money')
 	if (money === undefined) {money = 0}
-	let money_string = ''
-	let money_lastnumber = String(money).split('').reverse()[0]
-	if (money_lastnumber == 1) money_string = eval(`${lang}.money_reply2_single`)
-	else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.money_reply2_many`)
-	else money_string = eval(`${lang}.money_reply2_24`)
-	var response = eval(`${lang}.money_reply1`) + money + money_string
+	var response = eval(`${lang}.money_reply`) + money
 	msg.reply(response)
 }
 
@@ -133,12 +128,7 @@ async function shop(msg, mongo_client) {
 		for (i = 0; i < roles_arr.length; i++) {
 			var role = await msg.guild.roles.fetch(roles_arr[i].role_id)
 			var role_price = await roles_arr[i].role_price
-			let money_string = ''
-			let money_lastnumber = String(role_price).split('').reverse()[0]
-			if (money_lastnumber == 1) money_string = eval(`${lang}.shop_moneys_single`)
-			else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.shop_moneys_many`)
-			else money_string = eval(`${lang}.shop_moneys_24`)
-			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ${role_price}`+ money_string
+			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ‎₴‎${role_price}\n`
 		}
 		msg.channel.send(list)
 	}
@@ -195,12 +185,7 @@ async function pay(msg, mongo_client) {
 		else {
 			await database.incValue(mongo_client, paid.id, 'money', money)
 			await database.incValue(mongo_client, payer.id, 'money', -money)
-			let money_string = ''
-			let money_lastnumber = String(money).split('').reverse()[0]
-			if (money_lastnumber == 1) money_string = eval(`${lang}.pay_success2_single`)
-			else if (money_lastnumber >= 5 || money_lastnumber == 0) money_string = eval(`${lang}.pay_success2_many`)
-			else money_string = eval(`${lang}.pay_success2_24`)
-			msg.reply(eval(`${lang}.pay_success1`) + money + money_string + `${'`'}${paid.username}${'`'}`)
+			msg.reply(eval(`${lang}.pay_success1`) + '₴‎' +money + eval(`${lang}.pay_success2`) + `${'`'}${paid.username}${'`'}`)
 		}
 	}
 }
