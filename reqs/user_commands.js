@@ -8,7 +8,7 @@ const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 async function help(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	try {
-		var command = msg.content.split(' ')[1]
+		let command = msg.content.split(' ')[1]
 		if (command === undefined) msg.channel.send(eval(`${lang}.help_main`))
 		else msg.channel.send(eval(`${lang}.help_${command}`))
 	}
@@ -23,8 +23,8 @@ function owl(msg) {
 
 async function rr(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
-	var ded_role = msg.guild.roles.cache.find(role => role.name === 'ded')
-	var ded_role_member = msg.member.roles.cache.find(role => role.name === 'ded')
+	let ded_role = msg.guild.roles.cache.find(role => role.name === 'ded')
+	let ded_role_member = msg.member.roles.cache.find(role => role.name === 'ded')
 	if (ded_role === undefined) msg.channel.send(eval(`${lang}.rr_undefined`))
 	else {
 		if (ded_role_member) msg.reply(eval(`${lang}.rr_dead`))	
@@ -47,8 +47,8 @@ async function prb(msg, mongo_client) {
 
 async function egg(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
-	var egger = msg.member.user
-	var egged = msg.mentions.users.first()
+	let egger = msg.member.user
+	let egged = msg.mentions.users.first()
 	if (egged === undefined) msg.channel.send(msg.member.user.username+eval(`${lang}.egg_undefined`))
 	else {
 		egg_count = await database.getValue(mongo_client, egged.id, 'egg-count')
@@ -66,16 +66,16 @@ async function egg(msg, mongo_client) {
 }
 
 function msToTime(s, lang) {
-	var ms = s % 1000
+	let ms = s % 1000
 	s = (s - ms) / 1000
-	var secs = s % 60
+	let secs = s % 60
 	s = (s - secs) / 60
-	var mins = s % 60
-	var hrs = (s - mins) / 60
+	let mins = s % 60
+	let hrs = (s - mins) / 60
 	if (lang == 'ru') {
-		var hrs_last_number = hrs.toString().split('').reverse()[0]
-		var mins_last_number = mins.toString().split('').reverse()[0]
-		var secs_last_number = secs.toString().split('').reverse()[0]
+		let hrs_last_number = hrs.toString().split('').reverse()[0]
+		let mins_last_number = mins.toString().split('').reverse()[0]
+		let secs_last_number = secs.toString().split('').reverse()[0]
     	if (hrs_last_number == 1) {var hrs_string = ' час '} else if ((hrs_last_number > 1) && (hrs_last_number < 5)) {var hrs_string = ' часа '} else {var hrs_string = ' часов '}
     	if (mins_last_number == 1) {var mins_string = ' минута '} else if ((mins_last_number) > 1 && (mins_last_number < 5)) {var mins_string = ' минуты '} else {var mins_string = ' минут '}
 		if (secs_last_number == 1) {var secs_string = ' секунда '} else if ((secs_last_number) > 1 && (secs_last_number < 5)) {var secs_string = ' секунды '} else {var secs_string = ' секунд '}
@@ -85,7 +85,7 @@ function msToTime(s, lang) {
     	if (mins == 1) {var mins_string = ' minute '} else {var mins_string = ' minutes '}
 		if (secs == 1) {var secs_string = ' second '} else {var secs_string = ' seconds '}
 	}
-	var result = ''
+	let result = ''
 	if ((hrs == 0) && (mins == 0) && (secs == 0)) {result = eval(`${lang}.mstotime_less`)}
 	if (hrs > 0) {result = result + hrs + hrs_string}
 	if (mins > 0) {result = result + mins + mins_string}
@@ -95,39 +95,39 @@ function msToTime(s, lang) {
 
 async function money(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
-	var money = await database.getValue(mongo_client, msg.member.user.id, 'money')
+	let money = await database.getValue(mongo_client, msg.member.user.id, 'money')
 	if (money === undefined) {money = 0}
-	var response = eval(`${lang}.money_reply`) + money
+	let response = eval(`${lang}.money_reply`) + money
 	msg.reply(response)
 }
 
 async function daily(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
-	var rewarded = msg.member.user.id
-	var money = await database.getValue(mongo_client, rewarded, 'money')
-	var daily_cooldown = await database.getValue(mongo_client, rewarded, 'daily-cooldown')
+	let rewarded = msg.member.user.id
+	let money = await database.getValue(mongo_client, rewarded, 'money')
+	let daily_cooldown = await database.getValue(mongo_client, rewarded, 'daily-cooldown')
 	if ((daily_cooldown === undefined) || (daily_cooldown <= Date.now())) {
-		var cooldown_exp = Date.now()+86400000
+		let cooldown_exp = Date.now()+86400000
 		database.setValue(mongo_client, rewarded, 'daily-cooldown', cooldown_exp)
 		if (money === undefined) database.setValue(mongo_client, rewarded, 'money', 0)
 		database.incValue(mongo_client, rewarded, 'money', 100)
 		msg.channel.send(eval(`${lang}.daily_reward`))
 	}
 	else {
-		var time_left = msToTime(await database.getValue(mongo_client, rewarded, 'daily-cooldown')-Date.now(), lang)
+		let time_left = msToTime(await database.getValue(mongo_client, rewarded, 'daily-cooldown')-Date.now(), lang)
 		msg.channel.send(eval(`${lang}.daily_left`)+time_left)
 	}
 }
 
 async function shop(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
-	var roles_arr = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
+	let roles_arr = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
 	if (roles_arr === undefined ^ []) msg.channel.send(eval(`${lang}.shop_unavailable`))
 	else {
-		var list = eval(`${lang}.shop_available`)
+		let list = eval(`${lang}.shop_available`)
 		for (i = 0; i < roles_arr.length; i++) {
-			var role = await msg.guild.roles.fetch(roles_arr[i].role_id)
-			var role_price = await roles_arr[i].role_price
+			let role = await msg.guild.roles.fetch(roles_arr[i].role_id)
+			let role_price = await roles_arr[i].role_price
 			list = list + `${i+1}. ${'`'}${role.name}${'`'} -  ‎₴‎${role_price}\n`
 		}
 		msg.channel.send(list)
@@ -149,7 +149,7 @@ async function buy_role(msg, mongo_client) {
 			else {
 				let roles_db = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
 				let money = await database.getValue(mongo_client, msg.member.user.id, 'money')
-				var i, buyable
+				let i, buyable
 				for (i = 0; i < roles_db.length; i++) {
 					if ((Object.values(roles_db[i])[0] == role.id)) {
 						buyable = true

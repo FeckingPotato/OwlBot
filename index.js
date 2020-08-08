@@ -19,7 +19,7 @@ mongo_client.connect(() => {
 	console.log('working')
 	discord_client.on('message', async function (msg) {
 		if (msg.content.startsWith('!')) {
-			var lang = await database.getValue(mongo_client, msg.channel.id, 'language')
+			let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 			if (lang === undefined) {database.setValue(mongo_client, msg.channel.id, 'language', 'en')}
 			try {eval(`usr_cmd.${msg.content.split(' ')[0].replace('!', '')}(msg, mongo_client)`)}
 			catch (error) {console.log(error)}
@@ -30,8 +30,8 @@ mongo_client.connect(() => {
 		}
 	})
 	discord_client.on('roleDelete', async function (role) {
-		var roles = await database.getValue(mongo_client, role.guild.id, 'role_prices')
-		var i
+		let roles = await database.getValue(mongo_client, role.guild.id, 'role_prices')
+		let i
 		for (i = 0; i < roles.length; i++) {
 			if (role.id == Object.values(roles[i])[0]) {
 				roles.splice(i, 1)
@@ -45,7 +45,7 @@ mongo_client.connect(() => {
 
 const express = require('express')
 
-  var app = express()
+  let app = express()
 
   app.get('/', function (req, res) {
     res.send(`Бот работает
