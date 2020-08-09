@@ -4,8 +4,8 @@ const db = process.env.DB
 async function getValue(mongo_client, id, collection) {
   let query = {id: id}
   let result = await mongo_client.db(db).collection(collection).findOne(query, {projection: { _id: 0, id: 0}})
-  if (result === null) {return undefined}
-  else {return result.value}
+  if (result === null) return undefined
+  else return result.value
 }
 
 async function incValue(mongo_client, id, collection, amount) {
@@ -22,6 +22,12 @@ async function setValue(mongo_client, id, collection, value) {
   return
 }
 
+async function getDocuments(mongo_client, collection, index) {
+  let result = await mongo_client.db(db).collection(collection).find({}, {projection: { _id: 0}}).toArray()
+  return result
+}
+
 module.exports.getValue = getValue
 module.exports.incValue = incValue
 module.exports.setValue = setValue
+module.exports.getDocuments = getDocuments
