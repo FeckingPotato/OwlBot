@@ -39,10 +39,18 @@ async function rr(msg, mongo_client) {
 	}
 }
 
-async function prb(msg, mongo_client) {
+async function prb(msg, mongo_client) { //real
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	if (msg.content === '!prb') msg.reply(eval(`${lang}.prb_nothing`))
 	else msg.reply(eval(`${lang}.prb_something`)+Math.floor(Math.random()*100)+'%')
+}
+
+async function рrb(msg, mongo_client) { //fake
+	if (msg.member.hasPermission("ADMINISTRATOR")) {
+		let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
+		if (msg.content === '!prb') msg.reply(eval(`${lang}.prb_nothing`))
+		else msg.reply(eval(`${lang}.prb_something`)+Math.floor(Math.random()*(100-80)+80)+'%')
+	}
 }
 
 async function egg(msg, mongo_client) {
@@ -136,7 +144,7 @@ async function shop(msg, mongo_client) {
 
 async function buy_role(msg, mongo_client) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
-	let msg_array = msg.content.split(' ')
+	let msg_array = msg.content.split('"')
 	msg_array.splice(0, 1)
 	let role_name = msg_array.join(' ')
 	if (role_name === '') msg.reply(eval(`${lang}.buy_undefined`))
@@ -225,7 +233,8 @@ async function top (msg, mongo_client) {
 module.exports.help = help
 module.exports.owl = owl
 module.exports.rr = rr
-module.exports.prb = prb
+module.exports.prb = prb //real
+module.exports.рrb = рrb //fake
 module.exports.egg = egg
 module.exports.money = money
 module.exports.daily = daily
