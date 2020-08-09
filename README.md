@@ -16,6 +16,7 @@ daily | Pays the daily reward (100 hryvnias) to the user
 shop | Lists the roles for sale (should be configured by the admin)
 buy_role *role* | Allows to buy the *role*
 pay *someone* | Allows you to pay *someone*
+top| Shows the richest people on the server
 # Admin commands
 Command | Description
 ------------ | -------------
