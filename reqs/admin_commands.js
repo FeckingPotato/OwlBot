@@ -34,21 +34,17 @@ async function setPaidRole(msg, mongo_client) {
     try {
        for (i = 0; i < roles.length; i++) {
            if (role_id == roles[i].role_id) {
-               exists = true
-                if (role_price = roles[i].role_price) {
-                    same_price = true
-                    existing_position = i
-                }
+               existing_position = i
             }
         }
     }
     catch {}
-    if (exists !== true) {
+    if (existing_position === undefined) {
         await roles.push({role_id: role_id, role_price: role_price})
         database.setValue(mongo_client, msg.guild.id, 'role_prices', roles)
     }
-    else if (same_price === true && existing_position !== undefined) {
-        roles[exising_position].role_price = role_price
+    else {
+        roles[existing_position].role_price = role_price
         database.setValue(mongo_client, msg.guild.id, 'role_prices', roles)
     }
 }
