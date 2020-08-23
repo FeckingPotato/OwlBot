@@ -1,5 +1,6 @@
 const database = require('./database.js')
 const fs = require('fs')
+const e = require('express')
 const ru = JSON.parse(fs.readFileSync('./translations/ru.json'))
 const en = JSON.parse(fs.readFileSync('./translations/en.json'))
 
@@ -38,7 +39,7 @@ async function setPaidRole(msg, mongo_client) {
             }
         }
     }
-    catch {}
+    catch (error) {msg.channel.send(error)}
     if (existing_position === undefined) {
         await roles.push({role_id: role_id, role_price: role_price})
         database.setValue(mongo_client, msg.guild.id, 'role_prices', roles)
@@ -49,5 +50,40 @@ async function setPaidRole(msg, mongo_client) {
     }
 }
 
+async function getBotServerDate(msg) {
+    msg.channel.send(Date())
+}
+
+async function createLottery(msg, mongo_client) {
+    let channel = msg.guild.channels.cache.get(msg.content.split(' ')[1])
+    let time = Number(msg.content.split(' ')[2])
+    let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery_time') 
+    let value = {channel: channel.id, time: time}
+    if (channel === undefined) msg.channel.send('Wrong channel ID')
+    else if (time < 1 || time > 24) msg.channel.send('Time should be a number from 1 to 24')
+    else if (existing_value !== undefined){
+        database.setValue(mongo_client, msg.guild.id, 'lottery_time', value)
+        msg.channel.send('Lottery updated')
+    }
+    else {
+        database.setValue(mongo_client, msg.guild.id, 'lottery_time', value)
+        msg.channel.send('Lottery created')
+    }
+}
+
+async function deleteLottery(msg, mongo_client) {
+    let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery_time')
+    if (existing_value !== undefined){
+        await database.deleteDocument(mongo_client, msg.guild.id, 'lottery_time', undefined)
+        msg.channel.send('Lottery deleted')
+    }
+    else {
+        msg.channel.send('There is no lottery to delete')
+    }
+}
+
 module.exports.lang = lang
 module.exports.setPaidRole = setPaidRole
+module.exports.getBotServerDate = getBotServerDate
+module.exports.createLottery = createLottery
+module.exports.deleteLottery = deleteLottery

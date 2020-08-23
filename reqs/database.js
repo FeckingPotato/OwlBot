@@ -22,12 +22,18 @@ async function setValue(mongo_client, id, collection, value) {
   return
 }
 
-async function getDocuments(mongo_client, collection, index) {
+async function getDocuments(mongo_client, collection) {
   let result = await mongo_client.db(db).collection(collection).find({}, {projection: { _id: 0}}).toArray()
   return result
+}
+
+async function deleteDocument(mongo_client, id, collection) {
+  mongo_client.db(db).collection(collection).deleteOne({id: id})
+  return
 }
 
 module.exports.getValue = getValue
 module.exports.incValue = incValue
 module.exports.setValue = setValue
 module.exports.getDocuments = getDocuments
+module.exports.deleteDocument = deleteDocument
