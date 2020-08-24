@@ -17,7 +17,7 @@ async function lang(msg, mongo_client) {
     }
 }
 
-async function setPaidRole(msg, mongo_client) {
+async function setPaidRole(msg, mongo_client) { //эту срань надо переписать через if else
     let msg_split = await msg.content.split(' ')
     if (await msg_split.length != 3) {
         msg.channel.send('The command syntax is incorrect')
@@ -57,24 +57,23 @@ async function getBotServerDate(msg) {
 async function createLottery(msg, mongo_client) {
     let channel = msg.guild.channels.cache.get(msg.content.split(' ')[1])
     let time = Number(msg.content.split(' ')[2])
-    let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery_time') 
-    let value = {channel: channel.id, time: time}
+    let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery') 
     if (channel === undefined) msg.channel.send('Wrong channel ID')
-    else if (time < 1 || time > 24) msg.channel.send('Time should be a number from 1 to 24')
+    else if (time < 0 || time > 23) msg.channel.send('Time should be a number from 0 to 23')
     else if (existing_value !== undefined){
-        database.setValue(mongo_client, msg.guild.id, 'lottery_time', value)
+        database.setValue(mongo_client, msg.guild.id, 'lottery', {channel: channel.id, time: time})
         msg.channel.send('Lottery updated')
     }
     else {
-        database.setValue(mongo_client, msg.guild.id, 'lottery_time', value)
+        database.setValue(mongo_client, msg.guild.id, 'lottery', {channel: channel.id, time: time})
         msg.channel.send('Lottery created')
     }
 }
 
 async function deleteLottery(msg, mongo_client) {
-    let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery_time')
+    let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery')
     if (existing_value !== undefined){
-        await database.deleteDocument(mongo_client, msg.guild.id, 'lottery_time', undefined)
+        await database.deleteDocument(mongo_client, msg.guild.id, 'lottery')
         msg.channel.send('Lottery deleted')
     }
     else {
