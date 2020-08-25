@@ -22,7 +22,7 @@ async function lottery(discord_client, mongo_client) {
 		if (date.getHours() === document.value.time) {
 			let numbers = []
 			while (numbers.length < 6) {
-				let random_number = Math.floor(Math.random()*30)+1
+				let random_number = Math.floor(Math.random()*25)+1
 				if(numbers.indexOf(random_number) === -1) numbers.push(random_number)
 			}
 			let lottery_tickets = await database.getValue(mongo_client, document.id, 'lottery_tickets')
@@ -35,7 +35,6 @@ async function lottery(discord_client, mongo_client) {
 						winner_tier++
 					}
 				}
-				console.log(winner_tier)
 				switch (winner_tier) {
 					case 1:
 						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 75)
@@ -44,16 +43,16 @@ async function lottery(discord_client, mongo_client) {
 						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 200)
 						break
 					case 3:
-						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 350)
+						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 400)
 						break
 					case 4:
 						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 750)
 						break
 					case 5:
-						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 1000)
+						database.incValue(mongo_client, lottery_ticket_person.user, 'money', 1500)
 						break
 					case 6:
-						database.incValue(mongo_client, document.user, 'money', 1500)
+						database.incValue(mongo_client, document.user, 'money', 2000)
 						break
 				}
 			}
@@ -75,8 +74,8 @@ mongo_client.connect(() => {
 			lottery(discord_client, mongo_client)
 			setInterval((async function() {
 				lottery(discord_client, mongo_client)
-			}), 5000)
-		}, 1)
+			}), 3600000)
+		}, 3600000 - startup_minutes)
 	})
 	discord_client.on('message', async function (msg) {
 		if (msg.content.startsWith('!')) {

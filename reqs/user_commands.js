@@ -229,20 +229,21 @@ async function top (msg, mongo_client) {
 	}
 }
 async function buy_lottery(msg, mongo_client) {
+	let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
 	let lottery_tickets = await database.getValue(mongo_client, msg.guild.id, 'lottery_tickets')
 	if (lottery_tickets === undefined) lottery_tickets = []
 	for (let i = 0; i < lottery_tickets.length; i++) {
-		if (lottery_tickets[i].user === msg.member.id) msg.reply(` you already have a lottery ticket, its numbers are:  ${lottery_tickets[i].numbers[0]}, ${lottery_tickets[i].numbers[1]}, ${lottery_tickets[i].numbers[2]}, ${lottery_tickets[i].numbers[3]}, ${lottery_tickets[i].numbers[4]}, ${lottery_tickets[i].numbers[5]}`)
+		if (lottery_tickets[i].user === msg.member.id) msg.reply(`${translation[lang].lottery_exists}${lottery_tickets[i].numbers[0]}, ${lottery_tickets[i].numbers[1]}, ${lottery_tickets[i].numbers[2]}, ${lottery_tickets[i].numbers[3]}, ${lottery_tickets[i].numbers[4]}, ${lottery_tickets[i].numbers[5]}`)
 		return
 	}
 	let numbers = []
 	while (numbers.length < 6) {
-		let random_number = Math.floor(Math.random()*30)+1
+		let random_number = Math.floor(Math.random()*25)+1
 		if(numbers.indexOf(random_number) === -1) numbers.push(random_number)
 	} 
 	lottery_tickets.push({user: msg.member.id, numbers: numbers})
 	database.setValue(mongo_client, msg.guild.id, 'lottery_tickets', lottery_tickets)
-	msg.reply(` you bought a lottery ticket, your numbers are: ${numbers[0]}, ${numbers[1]}, ${numbers[2]}, ${numbers[3]}, ${numbers[4]}, ${numbers[5]}`)
+	msg.reply(`${translation[lang].lottery_bought}${numbers[0]}, ${numbers[1]}, ${numbers[2]}, ${numbers[3]}, ${numbers[4]}, ${numbers[5]}`)
 }
 
 module.exports.help = help

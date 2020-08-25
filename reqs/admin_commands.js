@@ -1,31 +1,31 @@
 const database = require('./database.js')
 const fs = require('fs')
-const ru = JSON.parse(fs.readFileSync('./reqs/translation.json')).ru
-const en = JSON.parse(fs.readFileSync('./reqs/translation.json')).en
+const translation = JSON.parse(fs.readFileSync('./reqs/translation.json'))
 
 async function lang(msg, mongo_client) {
     switch (msg.content.split(' ')[1]) {
         case 'en':
             database.setValue(mongo_client, msg.channel.id, 'language', 'en')
-            msg.channel.send(en.set_lang)
+            msg.channel.send(translation.en.adm_setlang)
             break
        case 'ru':
             database.setValue(mongo_client, msg.channel.id, 'language', 'ru')
-            msg.channel.send(ru.set_lang)
+            msg.channel.send(translation.ru.adm_setlang)
             break
     }
 }
 
 async function setPaidRole(msg, mongo_client) { 
+    let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
     let msg_split = await msg.content.split(' ') 
     if (await msg_split.length != 3) {
-        msg.channel.send('The command syntax is incorrect')
+        msg.channel.send(translation[lang].adm_setrole_syntax)
     }
     else {
         let role_id = await msg_split[1]
         let role_price = parseInt(msg_split[2])
         if (await msg.guild.roles.fetch(role_id) === null) {
-            msg.channel.send('This role does not exist')
+            msg.channel.send(translation[lang].adm_setrole_nonexistent)
         }
         else {
             let roles = await database.getValue(mongo_client, msg.guild.id, 'role_prices')
@@ -39,10 +39,12 @@ async function setPaidRole(msg, mongo_client) {
             if (existing_position === undefined) {
                 await roles.push({role_id: role_id, role_price: role_price})
                 database.setValue(mongo_client, msg.guild.id, 'role_prices', roles)
+                msg.channel.send(translation[lang].adm_setrole_added)
             }
             else {
                 roles[existing_position].role_price = role_price
                 database.setValue(mongo_client, msg.guild.id, 'role_prices', roles)
+                msg.channel.send(translation[lang].adm_setrole_updated)
             }
         }
     }
@@ -53,29 +55,31 @@ async function getBotServerDate(msg) {
 }
 
 async function createLottery(msg, mongo_client) {
+    let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
     let channel = msg.guild.channels.cache.get(msg.content.split(' ')[1])
     let time = Number(msg.content.split(' ')[2])
     let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery') 
-    if (channel === undefined) msg.channel.send('Wrong channel ID')
-    else if (time < 0 || time > 23) msg.channel.send('Time should be a number from 0 to 23')
+    if (channel === undefined) msg.channel.send(translation[lang].adm_lottery_id)
+    else if (time < 0 || time > 23) msg.channel.send(translation[lang].adm_lottery_time)
     else if (existing_value !== undefined){
         database.setValue(mongo_client, msg.guild.id, 'lottery', {channel: channel.id, time: time})
-        msg.channel.send('Lottery updated')
+        msg.channel.send(translation[lang].adm_lottery_updated)
     }
     else {
         database.setValue(mongo_client, msg.guild.id, 'lottery', {channel: channel.id, time: time})
-        msg.channel.send('Lottery created')
+        msg.channel.send(translation[lang].adm_lottery_created)
     }
 }
 
 async function deleteLottery(msg, mongo_client) {
+    let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
     let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery')
     if (existing_value !== undefined){
         await database.deleteDocument(mongo_client, msg.guild.id, 'lottery')
-        msg.channel.send('Lottery deleted')
+        msg.channel.send(translation[lang].adm_lottery_deleted)
     }
     else {
-        msg.channel.send('There is no lottery to delete')
+        msg.channel.send(translation[lang].adm_lottery_nonexistent)
     }
 }
 
