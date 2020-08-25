@@ -13,6 +13,7 @@ const database = require('./reqs/database.js')
 const http = require('./reqs/http-functions.js')
 
 fs.exists('./owl.jpg', exists => {if (!exists) http.owl()})
+
 async function lottery(discord_client, mongo_client) {
 	let documents = await database.getDocuments(mongo_client, 'lottery')
 	for (let i = 0; i < documents.length; i++) {
@@ -62,6 +63,7 @@ async function lottery(discord_client, mongo_client) {
 		}
 	}
 }
+
 mongo_client.connect(() => {
 	discord_client.login(token)
 	discord_client.on("ready", async function() {
