@@ -244,7 +244,7 @@ async function buy_lottery(msg, mongo_client) {
 		let money = await database.getValue(mongo_client, msg.member.user.id, 'money')
 		if (money < 50) msg.reply( translation[lang].notenoughcashstranger)
 		else {
-			database.incValue(mongo_client, msg.member.user.id, 'money', -50)
+			database.incValue(mongo_client, msg.member.user.id, 'money', -75)
 			let numbers = []
 			while (numbers.length < 6) {
 				let random_number = Math.floor(Math.random()*25)+1
