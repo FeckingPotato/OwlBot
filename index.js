@@ -85,6 +85,8 @@ mongo_client.connect(() => {
 			catch (error) {console.log(error)}
 		}
 		else if ((msg.content.startsWith('*')) && (msg.member.hasPermission("ADMINISTRATOR"))) {
+			let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
+			if (lang === undefined) {database.setValue(mongo_client, msg.channel.id, 'language', 'en')}
 			try {eval(`adm_cmd.${msg.content.split(' ')[0].replace('*', '')}(msg, mongo_client)`)}
 			catch (error) {console.log(error)}
 		}

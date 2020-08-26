@@ -71,12 +71,12 @@ async function createLottery(msg, mongo_client) {
     }
 }
 
-async function deleteLottery(msg, mongo_client) {
+async function removeLottery(msg, mongo_client) {
     let lang = await database.getValue(mongo_client, msg.channel.id, 'language')
     let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery')
     if (existing_value !== undefined){
         await database.deleteDocument(mongo_client, msg.guild.id, 'lottery')
-        msg.channel.send(translation[lang].adm_lottery_deleted)
+        msg.channel.send(translation[lang].adm_lottery_removed)
     }
     else {
         msg.channel.send(translation[lang].adm_lottery_nonexistent)
@@ -87,4 +87,4 @@ module.exports.lang = lang
 module.exports.setPaidRole = setPaidRole
 module.exports.getBotServerDate = getBotServerDate
 module.exports.createLottery = createLottery
-module.exports.deleteLottery = deleteLottery
+module.exports.removeLottery = removeLottery
