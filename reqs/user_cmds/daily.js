@@ -38,7 +38,7 @@ module.exports = async function daily(msg, mongo_client) {
 				break;
 		};
 		database.incValue(mongo_client, rewarded, 'money', reward);
-		msg.channel.send(translation[lang].daily_reward1 + String(reward) + translation[lang].daily_reward2);
+		msg.channel.send(translation[lang].daily_reward1 + String(reward) + translation[lang].daily_reward2 + String(money + reward));
 	} else {
 		let time_left = require('../mstotime.js')((await database.getValue(mongo_client, rewarded, 'daily-cooldown')) - Date.now(),lang);
 		msg.channel.send(translation[lang].daily_left + time_left);
