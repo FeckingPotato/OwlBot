@@ -6,7 +6,7 @@ module.exports = async function top(msg, mongo_client) {
 	let money_count = await mongo_client.db(process.env.DB).collection('money').countDocuments();
 	let documents = await database.getDocuments(mongo_client, 'money');
 	let money_obj = [];
-	for (var i = 0; i < money_count; i++) {
+	for (let i = 0; i < money_count; i++) {
 		let document = documents[i];
 		let GuildMember = await msg.guild.members.cache.get(document.id);
 		if (GuildMember !== undefined) {
@@ -29,7 +29,7 @@ module.exports = async function top(msg, mongo_client) {
 		);
 	else {
 		let result = `${translation[lang].top_people1} ${people_count} ${translation[lang].top_people2}`;
-		for (var i = 0; i < people_count; i++) {
+		for (let i = 0; i < people_count; i++) {
 			result = result + `${i + 1}. ${money_obj[i].name} - ₴${money_obj[i].money}\n`;
 		}
 		msg.channel.send(result);

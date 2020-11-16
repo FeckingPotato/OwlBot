@@ -13,8 +13,7 @@ module.exports = async function pay(msg, mongo_client) {
 		let money_payer = await database.getValue(mongo_client, payer.id, 'money');
 		if (money_payer < money) msg.reply(translation[lang].notenoughcashstranger);
 		else {
-			await database.incValue(mongo_client, paid.id, 'money', money);
-			await database.incValue(mongo_client, payer.id, 'money', -money);
+			await database.incValue(mongo_client, paid.id, 'money', money).then(() => database.incValue(mongo_client, payer.id, 'money', -money));
 			msg.reply(`${translation[lang].pay_success}${'`'}${paid.username}${'`'} ₴‎${money}`);
 		}
 	}

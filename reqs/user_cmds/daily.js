@@ -6,12 +6,15 @@ module.exports = async function daily(msg, mongo_client) {
 	let rewarded = msg.member.user.id;
 	let money = await database.getValue(mongo_client, rewarded, 'money');
 	let daily_cooldown = await database.getValue(mongo_client, rewarded, 'daily-cooldown');
-	if (daily_cooldown === undefined || daily_cooldown <= Date.now()) {
+	if (!daily_cooldown || daily_cooldown <= Date.now()) {
 		if ((Date.now() - daily_cooldown) > 86400000) database.setValue(mongo_client, rewarded, 'daily-tier', 0);
 		let cooldown_exp = Date.now() + 86400000;
 		database.setValue(mongo_client, rewarded, 'daily-cooldown', cooldown_exp);
 		let daily_tier = await database.getValue(mongo_client, rewarded, 'daily-tier');
-		if (money === undefined) database.setValue(mongo_client, rewarded, 'money', 0);
+		if (!money) {
+			database.setValue(mongo_client, rewarded, 'money', 0);
+			money = 0;
+		}
 		let reward = 100;
 		switch(daily_tier) {
 			default:
@@ -37,10 +40,11 @@ module.exports = async function daily(msg, mongo_client) {
 				reward = 350;
 				break;
 		};
-		database.incValue(mongo_client, rewarded, 'money', reward);
-		msg.channel.send(translation[lang].daily_reward1 + String(reward) + translation[lang].daily_reward2 + String(money + reward));
+		database.incValue(mongo_client, rewarded, 'money', reward).then(
+			() => msg.channel.send(`${translation[lang].daily_reward1} (‎₴${String(reward)}), ${translation[lang].daily_reward2}: ₴${String(money + reward)}`)
+		);
 	} else {
-		let time_left = require('../mstotime.js')((await database.getValue(mongo_client, rewarded, 'daily-cooldown')) - Date.now(),lang);
-		msg.channel.send(translation[lang].daily_left + time_left);
+		let time_left = require('../mstotime.js')((await database.getValue(mongo_client, rewarded, 'daily-cooldown')) - Date.now(), lang);
+		msg.channel.send(`${translation[lang].daily_left}: ${time_left}`);
 	}
 };
