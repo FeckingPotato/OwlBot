@@ -6,9 +6,9 @@ module.exports = async function createLottery(msg, mongo_client) {
 	let channel = msg.guild.channels.cache.get(msg.content.split(' ')[1]);
 	let time = Number(msg.content.split(' ')[2]);
 	let existing_value = await database.getValue(mongo_client, msg.guild.id, 'lottery');
-	if (channel === undefined) msg.channel.send(translation[lang].adm_lottery_id);
-	else if (time < 0 || time > 23) msg.channel.send(translation[lang].adm_lottery_time);
-	else if (existing_value !== undefined) {
+	if (!channel) msg.channel.send(translation[lang].adm_lottery_id);
+	else if ((time < 0)|| (time > 23) || (!time)) msg.channel.send(translation[lang].adm_lottery_time);
+	else if (existing_value) {
 		database.setValue(mongo_client, msg.guild.id, 'lottery', {channel: channel.id, time: time});
 		msg.channel.send(translation[lang].adm_lottery_updated);
 	} else {
