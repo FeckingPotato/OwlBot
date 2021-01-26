@@ -1,7 +1,4 @@
-module.exports = async function top(msg, mongo_client) {
-	let database = require('../database.js');
-	let fs = require('fs');
-	let translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
+module.exports = async function top(msg, mongo_client, database, translation) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language');
 	let money_count = await mongo_client.db(process.env.DB).collection('money').countDocuments();
 	let documents = await database.getDocuments(mongo_client, 'money');

@@ -1,6 +1,4 @@
-module.exports = async function lang(msg, mongo_client) {
-	let database = require('../database.js');
-	let fs = require('fs');
+module.exports = async function lang(msg, mongo_client, database, translation, fs) {
 	let translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
 	switch (msg.content.split(' ')[1]) {
 		case 'en':

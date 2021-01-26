@@ -1,7 +1,4 @@
-module.exports = async function hug(msg, mongo_client) {
-	let database = require('../database.js');
-	let fs = require('fs');
-	let translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
+module.exports = async function hug(msg, mongo_client, database, translation) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language');
 	let hugger = msg.member.user;
 	let hugged = msg.mentions.users.first();

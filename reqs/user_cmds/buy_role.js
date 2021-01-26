@@ -1,7 +1,4 @@
-module.exports = async function buy_role(msg, mongo_client) {
-	let database = require('../database.js');
-	let fs = require('fs');
-	let translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
+module.exports = async function buy_role(msg, mongo_client, database, translation, fs, database, translation, fs) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language');
 	let msg_array = msg.content.split(' ');
 	msg_array.splice(0, 1);

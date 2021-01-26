@@ -1,7 +1,4 @@
-module.exports = async function daily(msg, mongo_client) {
-	let database = require('../database.js');
-	let fs = require('fs');
-	let translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
+module.exports = async function daily(msg, mongo_client, database, translation) {
 	let lang = await database.getValue(mongo_client, msg.channel.id, 'language');
 	let rewarded = msg.member.user.id;
 	let money = await database.getValue(mongo_client, rewarded, 'money');
@@ -11,11 +8,11 @@ module.exports = async function daily(msg, mongo_client) {
 		let cooldown_exp = Date.now() + 86400000;
 		database.setValue(mongo_client, rewarded, 'daily-cooldown', cooldown_exp);
 		let daily_tier = await database.getValue(mongo_client, rewarded, 'daily-tier');
+		let reward = 100;
 		if (!money) {
 			database.setValue(mongo_client, rewarded, 'money', 0);
 			money = 0;
 		}
-		let reward = 100;
 		switch(daily_tier) {
 			default:
 				database.setValue(mongo_client, rewarded, 'daily-tier', 1);

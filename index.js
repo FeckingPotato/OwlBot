@@ -8,45 +8,34 @@ const mongo_client = new MongoClient(process.env.URI, {useUnifiedTopology: true}
 const fs = require('fs');
 
 const database = require('./reqs/database.js');
-const lottery = require('./reqs/lottery.js');
-const http = require('./reqs/http-functions.js');
+const translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
 
-if (!fs.existsSync('./owl.jpg')) http.owl();
+if (!fs.existsSync('./owl.jpg')) require('./reqs/http-functions.js').owl();
 
 mongo_client.connect(() => {
 	discord_client.login(token);
 	discord_client.on('ready', () => {
 		console.log('working');
-		let startup_date = new Date();
-		let startup_minutes = startup_date.getMinutes() * 60000;
-		if (startup_minutes === 0) startup_minutes = 3600000;
-		setTimeout(() => {
-			lottery(discord_client, mongo_client);
-			setInterval(() => {
-				lottery(discord_client, mongo_client);
-			}, 3600000);
-		}, 3600000 - startup_minutes);
 	});
+
 	discord_client.on('message', async (msg) => {
 		if (msg.content.startsWith('!')) {
 			let lang = await database.getValue(mongo_client, msg.channel.id, 'language');
-			if (lang === undefined) {
+			let module_path = `./reqs/user_cmds/${msg.content.split(' ')[0].replace('!', '')}.js`;
+			if (!lang) {
 				database.setValue(mongo_client, msg.channel.id, 'language', 'en');
 			}
-			try {
-				require(`./reqs/user_cmds/${msg.content.split(' ')[0].replace('!', '')}.js`)(msg, mongo_client);
-			} catch (error) {
-				console.log(error);
+			if (fs.existsSync(module_path)){
+				require(module_path)(msg, mongo_client, database, translation, fs);
 			}
 		} else if (msg.content.startsWith('*') && msg.member.hasPermission('ADMINISTRATOR')) {
 			let lang = await database.getValue(mongo_client, msg.channel.id, 'language');
-			if (lang === undefined) {
+			let module_path = `./reqs/admin_cmds/${msg.content.split(' ')[0].replace('*', '')}.js`;
+			if (!lang) {
 				database.setValue(mongo_client, msg.channel.id, 'language', 'en');
 			}
-			try {
-				require(`./reqs/admin_cmds/${msg.content.split(' ')[0].replace('*', '')}.js`)(msg, mongo_client);
-			} catch (error) {
-				console.log(error);
+			if (fs.existsSync(module_path)) {
+				require()(msg, mongo_client, database, translation, fs);
 			}
 		}
 	});
