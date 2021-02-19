@@ -8,9 +8,12 @@ const mongo_client = new MongoClient(process.env.URI, {useUnifiedTopology: true}
 const fs = require('fs');
 
 const database = require('./reqs/database.js');
-const translation = JSON.parse(fs.readFileSync('./reqs/translation.json'));
 
-if (!fs.existsSync('./owl.jpg')) require('./reqs/http-functions.js').owl();
+const translation = require('./reqs/getTranslation.js')()
+
+if (!fs.existsSync('./owl.jpg')){
+	 require('./reqs/http-functions.js').owl();
+}
 
 mongo_client.connect(() => {
 	discord_client.login(token);

@@ -4,8 +4,7 @@ const db = process.env.DB
 async function getValue(mongo_client, id, collection) {
   let query = {id: id}
   let result = await mongo_client.db(db).collection(collection).findOne(query, {projection: { _id: 0, id: 0}})
-  if (!result) return undefined
-  else return result.value
+  return result.value
 }
 
 async function incValue(mongo_client, id, collection, amount) {
